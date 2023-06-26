@@ -1,0 +1,33 @@
+﻿@page "/todo"
+@using BlazorLearning.Models;
+
+<PageTitle>Todo</PageTitle>
+
+<h1>Todo (@Todos.Count(todo => !todo.IsDone))</h1>
+
+<ul>
+    @foreach (var todo in Todos)
+    {
+        <li>
+            <input type="checkbox" @bind="todo.IsDone" />
+            <input @bind="todo.Title" />
+        </li>
+    }
+</ul>
+
+<input placeholder="Something todo" @bind="NewTodo" />
+<button @onclick="AddTodo">Add todo</button>
+
+@code {
+    string NewTodo { get; set; }
+    List<TodoItem> Todos { get; } = new();
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(NewTodo))
+        {
+            Todos.Add(new TodoItem { Title = NewTodo });
+            NewTodo = string.Empty;
+        }
+    }
+}
