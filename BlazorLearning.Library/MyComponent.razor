@@ -1,0 +1,18 @@
+﻿@inject ExampleJsInterop JsService;
+
+<div class="my-component">
+    This component is defined in the <strong>BlazorLearning.Library</strong> library.
+
+    <button @onclick="@OnShowPromptEventHandler">
+        Show prompt 1
+    </button>
+    <button @onclick="@OnShowPrompt">
+        Show prompt 2
+    </button>
+</div>
+
+@code {
+    Action<MouseEventArgs> OnShowPromptEventHandler => (_) => OnShowPrompt();
+
+    void OnShowPrompt() => JsService.Prompt("Hello message");
+}

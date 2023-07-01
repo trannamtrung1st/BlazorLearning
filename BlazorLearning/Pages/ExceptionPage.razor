@@ -1,0 +1,39 @@
+﻿@page "/exception"
+
+<ErrorBoundary @ref="ErrorBoundary">
+    <ChildContent>
+        <h3>Scoped exception</h3>
+        <ExceptionComponent />
+    </ChildContent>
+    <ErrorContent>
+        <p class="errorUI">Scoped error page damn!</p>
+        <p class="text-danger">@context.Message</p>
+    </ErrorContent>
+</ErrorBoundary>
+
+<h3>Global exception</h3>
+<ExceptionComponent />
+
+<h3>Handled exception</h3>
+<p>
+    <button @onclick="HandledException">Handled exception</button>
+</p>
+
+@code {
+    private ErrorBoundary ErrorBoundary { get; set; }
+
+    [CascadingParameter]
+    public Error Error { get; set; }
+
+    void HandledException()
+    {
+        try
+        {
+            throw new System.Exception("AAA Handled exception");
+        }
+        catch (Exception ex)
+        {
+            Error?.ProcessError(ex);
+        }
+    }
+}

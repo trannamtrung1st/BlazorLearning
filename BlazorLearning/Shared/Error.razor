@@ -1,0 +1,31 @@
+﻿@using Microsoft.Extensions.Logging
+@inject ILogger<Error> Logger
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@if (Exception != null)
+{
+    <p class="text-danger">Here's the exception: @Exception</p>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    Exception Exception { get; set; }
+
+    public async void ProcessError(Exception ex)
+    {
+        Exception = ex;
+        StateHasChanged();
+
+        Logger.LogError("Error:ProcessError - Type: {Type} Message: {Message}",
+            ex.GetType(), ex.Message);
+
+        await Task.Delay(5000);
+        Exception = null;
+        StateHasChanged();
+    }
+}
