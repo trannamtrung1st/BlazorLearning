@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearning.Library", "B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearning.WebClient", "BlazorLearning.WebClient\BlazorLearning.WebClient.csproj", "{192A2BC0-CA50-4AC4-AD87-FB9677F73A7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorLearning.WebApp", "BlazorLearning.WebApp\BlazorLearning.WebApp.csproj", "{1C2D8B46-F079-42AE-85DC-F3984CC577E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearning.WebApp", "BlazorLearning.WebApp\BlazorLearning.WebApp.csproj", "{1C2D8B46-F079-42AE-85DC-F3984CC577E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorLearning.WebClient.Library", "BlazorLearning.WebClient.Library\BlazorLearning.WebClient.Library.csproj", "{F19C23C9-B4D3-4FFF-8720-B48DD4892125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{1C2D8B46-F079-42AE-85DC-F3984CC577E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C2D8B46-F079-42AE-85DC-F3984CC577E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C2D8B46-F079-42AE-85DC-F3984CC577E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F19C23C9-B4D3-4FFF-8720-B48DD4892125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F19C23C9-B4D3-4FFF-8720-B48DD4892125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F19C23C9-B4D3-4FFF-8720-B48DD4892125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F19C23C9-B4D3-4FFF-8720-B48DD4892125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,237 @@
+﻿@page "/routing-page/{message?}/{number:int?}"
+@page "/routing-page/{message}/catch-dots"
+@page "/routing-page/{message}/{*catchAll}"
+@attribute [Route(Path)]
+@implements IDisposable
+@inject ILogger<Routing> Logger;
+@inject NavigationManager Nav;
+@inject IJSRuntime JSRuntime;
+
+<NavigationLock ConfirmExternalNavigation="@changed"
+                OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<h3>Routing</h3>
+
+<p>With route param<br />message: @Message, number: @Number</p>
+
+<p>With catch all: @CatchAll</p>
+
+<p>With query params<br /> terms: @Terms, page: @Page</p>
+
+<p>Uri manipulation: @uri</p>
+
+<p>
+    <NavLink href="routing-page/different-message">
+        Different message
+    </NavLink>
+    <br />
+    <NavLink href="routing-page/#app-focus-here">
+        Go to #app-focus-here
+    </NavLink>
+    <br />
+    <button @onclick="@OnNavigate1">
+        Navigate 1
+    </button>
+    <button @onclick="@OnNavigate2">
+        Navigate 2
+    </button>
+    <button @onclick="@ManipulateParams">
+        Manipulate params
+    </button>
+</p>
+
+<p>
+    <h3>Nav Handler</h3>
+    <button @onclick="@(() => Nav.NavigateTo("/"))">
+        Home (Allowed)
+    </button>
+    <button @onclick="@(() => Nav.NavigateTo("/prevent-navigation"))">
+        Prevent navigation
+    </button>
+</p>
+
+<p>
+    <h3>Nav Lock (Changed: @changed)</h3>
+    <button @onclick="@(() => Nav.NavigateTo("/"))">
+        Home
+    </button>
+    <button @onclick="@(() => changed = true)">
+        Make changes
+    </button>
+    <a href="https://www.microsoft.com">Microsoft homepage</a>
+</p>
+
+<p>
+    Not working for-loop
+    <ul>
+        @for (var i = 0; i < 5; i++)
+        {
+            <li><NavLink href="@($"sample-link-{i}")">Link @i</NavLink></li>
+        }
+    </ul>
+</p>
+
+<p>
+    Working for-loop
+    <ul>
+        @for (var i = 0; i < 5; i++)
+        {
+            var localIndex = i;
+            <li><NavLink href="@($"sample-link-{i}")">Link @localIndex</NavLink></li>
+        }
+    </ul>
+</p>
+
+<p>
+    Working foreach-loop
+    <ul>
+        @foreach (var i in Enumerable.Range(0, 5))
+        {
+            <li><NavLink href="@($"sample-link-{i}")">Link @i</NavLink></li>
+        }
+    </ul>
+</p>
+
+@for (var i = 0; i < 10; i++)
+{
+    @if (i == 3)
+    {
+        <h3 id="app-focus-here">Focus here!</h3>
+    }
+    <p>
+        Lorem Ipsum is simply dummy text of the printing and <br />
+        typesetting industry. Lorem Ipsum has been the industry's <br />
+        standard dummy text ever since the 1500s, when an unknown <br />
+        printer took a galley of type and scrambled it to make a <br />
+        type specimen book. It has survived not only five centuries, <br />
+        but also the leap into electronic typesetting, remaining essentially unchanged. <br />
+        It was popularised in the 1960s with the release of Letraset <br />
+        sheets containing Lorem Ipsum passages, and more recently with <br />
+        desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum
+    </p>
+}
+
+@code {
+    public const string Path = "/routing-constant";
+    private IDisposable registration;
+    private bool changed;
+
+    [Parameter]
+    public string Message { get; set; }
+
+    [Parameter]
+    public int? Number { get; set; }
+
+    [Parameter]
+    public string CatchAll { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "p")]
+    public int? Page { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string Terms { get; set; }
+
+    string uri { get; set; }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        if (changed)
+        {
+            var isConfirmed = await JSRuntime.InvokeAsync<bool>("confirm",
+                $"Are you sure you want to navigate to {context.TargetLocation}?");
+
+            if (!isConfirmed)
+            {
+                context.PreventNavigation();
+            }
+        }
+    }
+
+    // Only run once in component's life-cycle
+    protected override async Task OnInitializedAsync()
+    {
+        Message ??= "Default message";
+
+        Nav.LocationChanged += HandleLocationChanged;
+
+        await Task.CompletedTask;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Message ??= "Default message using ParametersSet";
+
+        await Task.CompletedTask;
+    }
+
+    Action OnNavigate1 => () => OnNavigate2();
+
+    void OnNavigate2() => Nav.NavigateTo("routing-page/hello-kitty", new NavigationOptions
+        {
+            HistoryEntryState = "Hello entry state"
+        });
+
+    async Task ManipulateParams()
+    {
+        uri = Nav.GetUriWithQueryParameter("p", default(int?));
+        Logger.LogInformation(uri);
+        StateHasChanged();
+
+        await Task.Delay(5000);
+
+        uri = Nav.GetUriWithQueryParameters(new Dictionary<string, object>
+            {
+                ["terms"] = "changed-terms",
+                ["added"] = 1
+            });
+        Logger.LogInformation(uri);
+        StateHasChanged();
+
+        await Task.Delay(5000);
+
+        uri = Nav.GetUriWithQueryParameters(Nav.Uri, new Dictionary<string, object>
+            {
+                ["added"] = 1,
+                ["new"] = 2,
+                ["p"] = 5,
+                ["terms"] = "My terms",
+                ["list"] = new[] { 1, 2, 3, 4, 5 }
+            });
+        Logger.LogInformation(uri);
+        Nav.NavigateTo(uri);
+    }
+
+    void HandleLocationChanged(object obj, LocationChangedEventArgs ev)
+    {
+        Logger.LogInformation(ev.Location);
+
+        Logger.LogInformation($"Intercepted: {ev.IsNavigationIntercepted}");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            registration = Nav.RegisterLocationChangingHandler(OnLocationChanging);
+        }
+    }
+
+    private ValueTask OnLocationChanging(LocationChangingContext context)
+    {
+        if (context.TargetLocation == "/prevent-navigation")
+        {
+            context.PreventNavigation();
+            Logger.LogInformation("Navigation is prevented");
+        }
+
+        return ValueTask.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        Nav.LocationChanged -= HandleLocationChanged;
+        registration?.Dispose();
+    }
+}

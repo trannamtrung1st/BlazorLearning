@@ -1,12 +1,53 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@inject ILogger<App> Logger;
+
+<Router AppAssembly="@typeof(App).Assembly"
+        AdditionalAssemblies="new[] { typeof(LibraryAssemblyType).Assembly }"
+        OnNavigateAsync="@OnNavigateAsync">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        <FocusOnNavigate RouteData="@routeData" Selector="#app-focus-here" />
     </Found>
+    <Navigating>
+        <p>Loading the requested page (lazy-loaded) &hellip;</p>
+    </Navigating>
     <NotFound>
         <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
+        @if (Remainder == 0)
+        {
+            <text>Hello, not found! @Remainder</text>
+        }
+        else
+        {
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        }
     </NotFound>
 </Router>
+
+@code {
+    long Remainder => DateTime.UtcNow.Second % 2;
+
+    //async Task OnNavigateAsync(NavigationContext context) // [NOTE] blocking version
+    async void OnNavigateAsync(NavigationContext context)
+    {
+        try
+        {
+            await Task.Delay(5000);
+
+            context.CancellationToken.ThrowIfCancellationRequested();
+
+            Logger.LogInformation($"OnNavigateAsync: {context.Path}");
+        }
+        catch
+        {
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Logger.LogInformation($"First render: {firstRender}");
+
+        await Task.CompletedTask;
+    }
+}
