@@ -1,0 +1,5 @@
+﻿<linker>
+	<assembly fullname="Microsoft.AspNetCore.Components">
+		<type fullname="Microsoft.AspNetCore.Components.OwningComponentBase" preserve="all" />
+	</assembly>
+</linker>

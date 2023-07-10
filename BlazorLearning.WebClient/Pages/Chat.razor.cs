@@ -22,7 +22,7 @@ namespace BlazorLearning.WebClient.Pages
             string apiUrl = Configuration.GetValue<string>("ApiUrl");
 
             hubConnection = new HubConnectionBuilder()
-                .WithUrl(new Uri($"{apiUrl}/hub/chat"))
+                .WithUrl(new Uri(new Uri(apiUrl), "/hub/chat"))
                 .Build();
 
             hubConnection.On<string, string>(nameof(ReceiveMessage), ReceiveMessage);

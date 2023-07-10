@@ -17,6 +17,7 @@
 <h3>Handled exception</h3>
 <p>
     <button @onclick="HandledException">Handled exception</button>
+    <button @onclick="AsyncException">Async exception</button>
 </p>
 
 @code {
@@ -34,6 +35,19 @@
         catch (Exception ex)
         {
             Error?.ProcessError(ex);
+        }
+    }
+
+    async void AsyncException()
+    {
+        try
+        {
+            await Task.Delay(5000);
+            throw new Exception("Async exception after 5s");
+        }
+        catch (Exception ex)
+        {
+            await this.DispatchExceptionAsync(ex);
         }
     }
 }

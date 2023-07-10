@@ -1,29 +1,31 @@
 ﻿@inject ILogger<App> Logger;
 
-<Router AppAssembly="@typeof(App).Assembly"
-        AdditionalAssemblies="new[] { typeof(LibraryAssemblyType).Assembly }"
-        OnNavigateAsync="@OnNavigateAsync">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="#app-focus-here" />
-    </Found>
-    <Navigating>
-        <p>Loading the requested page (lazy-loaded) &hellip;</p>
-    </Navigating>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        @if (Remainder == 0)
-        {
-            <text>Hello, not found! @Remainder</text>
-        }
-        else
-        {
-            <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
-            </LayoutView>
-        }
-    </NotFound>
-</Router>
+<Error>
+    <Router AppAssembly="@typeof(App).Assembly"
+            AdditionalAssemblies="new[] { typeof(LibraryAssemblyType).Assembly }"
+            OnNavigateAsync="@OnNavigateAsync">
+        <Found Context="routeData">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            <FocusOnNavigate RouteData="@routeData" Selector="#app-focus-here" />
+        </Found>
+        <Navigating>
+            <p>Loading the requested page (lazy-loaded) &hellip;</p>
+        </Navigating>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            @if (Remainder == 0)
+            {
+                <text>Hello, not found! @Remainder</text>
+            }
+            else
+            {
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p role="alert">Sorry, there's nothing at this address.</p>
+                </LayoutView>
+            }
+        </NotFound>
+    </Router>
+</Error>
 
 @code {
     long Remainder => DateTime.UtcNow.Second % 2;
