@@ -11,12 +11,12 @@
 }
 
 @code {
-    [Parameter]
+    [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; }
 
     Exception Exception { get; set; }
 
-    public async void ProcessError(Exception ex)
+    public async Task ProcessError(Exception ex)
     {
         Exception = ex;
         StateHasChanged();

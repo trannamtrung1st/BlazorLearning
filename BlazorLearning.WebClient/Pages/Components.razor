@@ -1,0 +1,69 @@
+﻿@page "/components"
+
+<PageTitle>Components</PageTitle>
+
+<ChildComponent @ref="@childComponent" />
+
+<button class="btn btn-primary" @onclick="@(() => childComponent?.ChildMethod())">Call child method</button>
+
+<hr />
+
+@((MarkupString)rawHtml)
+
+<hr />
+
+@for (var i = 0; i < 5; i++)
+{
+    @ReuseFragment(i)
+}
+
+@for (var i = 0; i < 5; i++)
+{
+    @ReuseFragmentWithArgument(i)
+}
+
+@for (var i = 0; i < 5; i++)
+{
+    @ReuseFragmentWithArgument2(("Sample message", i))
+}
+
+@code {
+    ChildComponent childComponent;
+
+    string rawHtml = "<p>This is a raw HTML string</p>";
+
+    private Func<int, RenderFragment> ReuseFragment = (int idx) => (__builder) =>
+    {
+        <p>Reuse component @idx</p>
+    };
+
+    private RenderFragment<int> ReuseFragmentWithArgument = (int idx) =>
+    @<p>
+        Reuse component with argument @idx
+    </p>;
+
+    private RenderFragment<(string Message, int Idx)> ReuseFragmentWithArgument2 => (values) => __builder =>
+    {
+        (string message, int idx) = values;
+
+        RenderFragment Hr = builder =>
+        {
+            <hr />
+        };
+
+        if (idx % 2 == 0)
+        {
+            <p>
+                Case 1: Reuse component with message @message and idx @idx
+            </p>
+            @Hr
+        }
+        else
+        {
+            <p>
+                Case 2: Reuse component with message @message and idx @idx
+            </p>
+            @Hr
+        }
+    };
+}

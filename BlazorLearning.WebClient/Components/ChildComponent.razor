@@ -1,0 +1,27 @@
+﻿@inject ILogger<ChildComponent> Logger
+@preservewhitespace true
+
+<h3 @ref="H1Ref">ChildComponent</h3>
+<p style="white-space: pre">
+    @if (true)
+    {
+        <text>
+            Hello     space aloooo coococococo @(true ? "AA" : "B")
+        </text>
+    }
+    else
+    {
+        <text>
+            Hello     space aloooo coococococo @(true ? "AA" : "B")
+        </text>
+    }
+</p>
+
+@code {
+    private ElementReference H1Ref;
+
+    public void ChildMethod()
+    {
+        Logger.LogInformation($"Child method was called {H1Ref}");
+    }
+}
