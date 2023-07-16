@@ -1,0 +1,46 @@
+﻿@using BlazorLearning.WebClient.Services;
+@implements IDisposable;
+@inject INotiferService NotiferService;
+
+<h3>SyncContext</h3>
+
+<p>Last notification (culture @cultureInfo): @lastNotify</p>
+
+<button class="btn btn-primary" @onclick="@NotifyClick">Notify</button>
+
+@code {
+    string cultureInfo;
+    DateTime? lastNotify;
+
+    protected override Task OnInitializedAsync()
+    {
+        NotiferService.NotifyFunc += OnNotify;
+
+        return Task.CompletedTask;
+    }
+
+    async Task NotifyClick()
+    {
+        Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("vi-VN");
+
+        await NotiferService.Start();
+    }
+
+    async Task OnNotify()
+    {
+        // [NOTE] for consistency between browser and server behavior
+        await InvokeAsync(() =>
+        {
+            cultureInfo = Thread.CurrentThread.CurrentUICulture.Name;
+
+            lastNotify = DateTime.Now;
+
+            this.StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        NotiferService.NotifyFunc -= OnNotify;
+    }
+}
