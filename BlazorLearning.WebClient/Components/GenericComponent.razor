@@ -1,0 +1,16 @@
+﻿@typeparam TClass where TClass : class
+@typeparam TStruct where TStruct : struct
+
+<h3>GenericComponent</h3>
+
+<p>Struct: @StructValue</p>
+
+<p>Class: @ClassValue</p>
+
+@code {
+    [Parameter]
+    public TClass ClassValue { get; set; }
+
+    [Parameter]
+    public TStruct StructValue { get; set; }
+}

@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearning.WebClient", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearning.WebClient.Library", "BlazorLearning.WebClient.Library\BlazorLearning.WebClient.Library.csproj", "{F19C23C9-B4D3-4FFF-8720-B48DD4892125}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorLearning.WebApp.Server", "BlazorLearning.WebApp.Server\BlazorLearning.WebApp.Server.csproj", "{65F76903-7396-4508-A72B-316161A7D099}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearning.WebApp.Server", "BlazorLearning.WebApp.Server\BlazorLearning.WebApp.Server.csproj", "{65F76903-7396-4508-A72B-316161A7D099}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorLearning.WebApp.Client", "BlazorLearning.WebApp.Client\BlazorLearning.WebApp.Client.csproj", "{B064CBBA-68FD-4AF2-96AA-D1D5F76464C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorLearning.WebApp.Client", "BlazorLearning.WebApp.Client\BlazorLearning.WebApp.Client.csproj", "{B064CBBA-68FD-4AF2-96AA-D1D5F76464C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,6 +12,13 @@
 
 <hr />
 
+<CascadingTypeParameter TClass="object" TStruct="int">
+    <GenericComponent ClassValue="@this" StructValue="100" />
+    <GenericComponent TClass="object" TStruct="double" ClassValue="@this" StructValue="15.5" />
+</CascadingTypeParameter>
+
+<hr />
+
 @for (var i = 0; i < 5; i++)
 {
     @ReuseFragment(i)

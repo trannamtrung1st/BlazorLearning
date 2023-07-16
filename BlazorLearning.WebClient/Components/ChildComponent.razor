@@ -3,16 +3,16 @@
 
 <h3 @ref="H1Ref">ChildComponent</h3>
 <p style="white-space: pre">
-    @if (true)
+    @if (new Random().Next() % 2 == 0)
     {
         <text>
-            Hello     space aloooo coococococo @(true ? "AA" : "B")
+            Hello   1  space aloooo coococococo @(true ? "AA" : "B")
         </text>
     }
     else
     {
         <text>
-            Hello     space aloooo coococococo @(true ? "AA" : "B")
+            Hello   2  space aloooo coococococo @(true ? "AA" : "B")
         </text>
     }
 </p>

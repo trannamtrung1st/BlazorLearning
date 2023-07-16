@@ -1,0 +1,13 @@
+﻿@attribute [CascadingTypeParameter(nameof(TClass))]
+@attribute [CascadingTypeParameter(nameof(TStruct))]
+@typeparam TClass where TClass : class
+@typeparam TStruct where TStruct : struct
+
+<h3>CascadingGenericComponent</h3>
+
+@ChildContent
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}
