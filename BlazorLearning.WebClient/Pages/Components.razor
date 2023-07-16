@@ -36,6 +36,16 @@
 <button class="btn btn-primary" @onclick="StateHasChanged">Trigger rerender</button>
 <hr />
 
+<AttributesComponent @attributes="@(new Dictionary<string,object> {
+    ["Param1"] = "Param 1 value",
+    ["Param2"] = "Param 2 value",
+    ["Param3"] = "Param 3 value",
+    ["Param4"] = "Param 4 value",
+    ["style"] = "color:red",
+})" />
+
+<hr />
+
 @for (var i = 0; i < 5; i++)
 {
     @ReuseFragment(i)

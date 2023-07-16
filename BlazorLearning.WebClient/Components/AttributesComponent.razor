@@ -1,0 +1,20 @@
+﻿<h3>AttributesComponent</h3>
+
+<p>
+    Param 1: @Param1<br />
+    Param 2: @Param2<br />
+    <div @attributes="@AdditionalAttributes">
+        Additional: @AdditionalAttributes.Count<br />
+    </div>
+</p>
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object> AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public string Param1 { get; set; }
+
+    [Parameter]
+    public string Param2 { get; set; }
+}
