@@ -27,6 +27,15 @@
 
 <hr />
 
+<Expander Expanded="true">
+    Hello expanded
+</Expander>
+
+<Expander Expanded="true" />
+
+<button class="btn btn-primary" @onclick="StateHasChanged">Trigger rerender</button>
+<hr />
+
 @for (var i = 0; i < 5; i++)
 {
     @ReuseFragment(i)
