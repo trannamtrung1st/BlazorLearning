@@ -1,0 +1,33 @@
+﻿<h3>ListItemWithKey</h3>
+
+<button class="btn btn-primary" @onclick="Insert">Insert to top</button>
+
+<ul>
+    @{
+        foreach (var (data, idx) in dataList.Select((d, idx) => (d, idx)))
+        {
+            <li @key="data">
+                <input name="@($"value{data}")" @bind="@dataList[idx]" />
+            </li>
+        }
+    }
+</ul>
+
+@code {
+    List<Guid> dataList;
+
+    protected override void OnInitialized()
+    {
+        dataList = new List<Guid> { Guid.NewGuid() };
+    }
+
+    void Insert()
+    {
+        Task.Delay(5000).ContinueWith((_) =>
+        {
+            dataList.Insert(0, Guid.NewGuid());
+            this.StateHasChanged();
+        });
+    }
+}
+
