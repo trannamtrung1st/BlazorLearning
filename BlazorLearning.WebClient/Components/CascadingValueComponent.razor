@@ -1,0 +1,25 @@
+﻿<h3>CascadingValueComponents</h3>
+
+<p>
+    IntValue: @IntValue
+    <br />
+    StringValue: @StringValue
+    <br />
+    StringValue1: @StringValue1
+    <br />
+    StringValue2: @StringValue2
+</p>
+
+@code {
+    [CascadingParameter]
+    public int IntValue { get; set; }
+
+    [CascadingParameter]
+    public string StringValue { get; set; }
+
+    [CascadingParameter(Name = "String1")]
+    public string StringValue1 { get; set; }
+
+    [CascadingParameter(Name = "String2")]
+    public string StringValue2 { get; set; }
+}

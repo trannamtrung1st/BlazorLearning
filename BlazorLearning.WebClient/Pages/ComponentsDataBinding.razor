@@ -1,0 +1,113 @@
+﻿@page "/components-data-binding"
+@using DebounceThrottle;
+@inject IJSRuntime JS
+
+<PageTitle>Components (Data binding)</PageTitle>
+
+<h3>Data binding</h3>
+
+<p>On change: <input @bind="@input" /></p>
+
+<p>On change (explicit): <input @bind-value="@input" /></p>
+
+<p>On input: <input @bind="@input" @bind:event="oninput" /></p>
+
+<p>Bind after: <input @bind="@input" @bind:event="oninput" @bind:after="Search" /></p>
+
+<p>
+    Get set:
+    <br />
+    <input type="text" @bind:get="@input" @bind:set="(value) => input = value" @bind:event="oninput" />
+    <br />
+    <input type="text" @bind:get="@input" @bind:set="OnSet" @bind:event="oninput" />
+</p>
+
+<p>Input value: @input</p>
+
+<hr />
+<p>
+    <label>
+        Select one or more cars:
+        <select @onchange="SelectedCarsChanged" multiple>
+            <option value="audi">Audi</option>
+            <option value="jeep">Jeep</option>
+            <option value="opel">Opel</option>
+            <option value="saab">Saab</option>
+            <option value="volvo">Volvo</option>
+            <option value="">Empty value</option>
+        </select>
+    </label>
+</p>
+
+<p>
+    Selected Cars: @string.Join(", ", selectedCars)
+</p>
+
+<hr />
+
+<p>Unparsable values</p>
+
+<p>On change: <input @bind="intValue" /></p>
+
+<p>On input: <input @bind="intValue" @bind:event="oninput" /></p>
+
+<p>Int value: @intValue</p>
+
+<hr />
+<p>
+    <label>
+        <code>yyyy-MM-dd</code> format:
+        <input @bind="dateValue" @bind:format="yyyy-MM-dd" />
+    </label>
+</p>
+
+<p>
+    <label>
+        <code>yyyy-MM-dd</code> format:
+        <input type="date" @bind="dateOffset" @bind:format="yyyy-MM-dd" />
+    </label>
+</p>
+
+<p>
+    <code>StartDate</code>: @dateValue
+</p>
+<p>
+    <code>Date offset</code>: @dateOffset
+</p>
+
+<hr />
+
+<DataBindingComponent @bind-Value="@componentParam" />
+<DataBindingComponent @bind-Value="@componentParam" @bind-Value:event="ValueChanged" />
+
+<p>
+    Component param: @componentParam
+</p>
+
+@code {
+    private DateTime dateValue;
+    private DateTimeOffset? dateOffset;
+    private string componentParam;
+    private int intValue = 1;
+    private string input;
+    DebounceDispatcher searchDebouncer = new DebounceDispatcher(2000);
+    public string[] selectedCars = new string[] { };
+
+    private void SelectedCarsChanged(ChangeEventArgs e)
+    {
+        if (e.Value is not null)
+        {
+            selectedCars = (string[])e.Value;
+        }
+    }
+
+    private async Task Search()
+    {
+        await searchDebouncer.DebounceAsync(async () =>
+        {
+            await JS.InvokeVoidAsync("alert", input);
+        });
+    }
+
+    private void OnSet(string value) => input = value;
+}

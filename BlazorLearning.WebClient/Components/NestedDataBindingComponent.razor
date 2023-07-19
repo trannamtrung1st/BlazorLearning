@@ -1,0 +1,20 @@
+﻿<h3>NestedDataBindingComponent</h3>
+
+<p>Value changed</p>
+<p>
+    <input @bind:get="@Value" @bind:set="@SetValue" />
+    @* <input @bind:event="oninput" @bind:get="@Value" @bind:set="@SetValue" /> *@
+</p>
+
+@code {
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    private async Task SetValue(string value)
+    {
+        await ValueChanged.InvokeAsync(value);
+    }
+}
