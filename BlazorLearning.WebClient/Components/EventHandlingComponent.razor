@@ -1,0 +1,21 @@
+﻿<h3>Event handling component</h3>
+<p>
+    <button class="btn btn-primary" @onclick="OnClickCallback" @ondblclick="HandleAsyncCallback">
+        Event callback
+    </button>
+</p>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+
+    [Parameter]
+    public EventCallback AsyncCallback { get; set; }
+
+    private async Task HandleAsyncCallback()
+    {
+        await Task.Delay(5000);
+
+        await AsyncCallback.InvokeAsync();
+    }
+}

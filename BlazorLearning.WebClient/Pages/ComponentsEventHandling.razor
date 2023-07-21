@@ -1,0 +1,115 @@
+﻿@page "/components-event-handling"
+@using BlazorLearning.WebClient.Events;
+@using Microsoft.AspNetCore.Components.Sections
+@inject IJSRuntime JS
+
+<PageTitle>Components (Event handling)</PageTitle>
+
+<h3>Event handling</h3>
+
+<p>
+    <button class="btn btn-primary" @onclick="ReportPointerLocation">
+        Where's my mouse pointer for this button?
+    </button>
+</p>
+
+<p>@mousePointerMessage</p>
+
+<hr />
+
+<h3>Custom events</h3>
+<p>
+    <button class="btn btn-primary" @oncustomevent="OnCustomEvent" @oncustomdblclick="OnCustomDblClick"
+            onclick="clickCustomEvent(event)">
+        Custom event
+    </button>
+</p>
+
+<p>
+    Author: @lastCustomEvent?.Author
+    <br />
+    HTML: @lastCustomEvent?.ElementHtml
+</p>
+
+<p>
+    <h5>From custom click</h5>
+
+    Author: @lastCustomDblClickEvent?.Author
+    <br />
+    HTML: @lastCustomDblClickEvent?.ElementHtml
+</p>
+
+<hr />
+<h3>Lambda</h3>
+<p>
+    <button class="btn btn-primary" @onclick="@(e => JS.InvokeVoidAsync("alert", "Hello!"))">
+        Custom event
+    </button>
+</p>
+
+<hr />
+<EventHandlingComponent OnClickCallback="@(e => clickCallback = true)"
+                        AsyncCallback="@(e => JS.InvokeVoidAsync("alert", "Hello from async callback!"))" />
+<p>Click callback: @clickCallback</p>
+
+<hr />
+<h3>Prevent default + Stop propagation</h3>
+<p>
+    <input type="text" @onkeydown:preventDefault="preventDefault" @onkeydown:stopPropagation="stopPropagation" @onkeydown="@(e => { })" />
+    <br />
+    <button class="btn btn-primary" @onclick="@(e => { preventDefault = !preventDefault; stopPropagation = !stopPropagation; })">
+        Toggle values
+    </button>
+</p>
+
+<hr />
+<h3>Element ref + Focus</h3>
+<p>
+    <input type="text" @ref="inputRef" />
+    <br />
+    <button class="btn btn-primary" @onclick="@(async e => await inputRef.FocusAsync())">
+        Focus
+    </button>
+</p>
+
+
+<SectionContent SectionName="scripts">
+    <script>
+        function clickCustomEvent(e) {
+            const event = new CustomEvent('customevent', {
+                detail: {
+                    elementHtml: e.target.outerHTML
+                },
+                bubbles: true
+            });
+            e.target.dispatchEvent(event);
+        }
+    </script>
+</SectionContent>
+
+@code {
+    // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/event-handling?view=aspnetcore-8.0
+
+    private string mousePointerMessage;
+    private CustomEventArgs lastCustomEvent;
+    private CustomDblClickEventArgs lastCustomDblClickEvent;
+    private bool clickCallback;
+    private bool preventDefault = true;
+    private bool stopPropagation = true;
+    private ElementReference inputRef;
+
+    private void ReportPointerLocation(MouseEventArgs e)
+    {
+        mousePointerMessage = $"Mouse coordinates: {e.ScreenX}:{e.ScreenY}";
+    }
+
+    private void OnCustomEvent(CustomEventArgs e)
+    {
+        lastCustomEvent = e;
+    }
+
+    private void OnCustomDblClick(CustomDblClickEventArgs e)
+    {
+        lastCustomDblClickEvent = e;
+    }
+}
