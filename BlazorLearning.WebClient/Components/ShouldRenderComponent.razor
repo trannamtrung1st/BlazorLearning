@@ -1,0 +1,32 @@
+﻿@inject ILogger<ShouldRenderComponent> Logger;
+
+<h3>Should render component</h3>
+<p>
+    <input @bind="value" /> &nbsp; Render value: @value
+</p>
+
+@code {
+    private int lastValue;
+    private int value;
+
+    protected override bool ShouldRender()
+    {
+        bool shouldRender = false;
+
+        if (Math.Abs(value - lastValue) > 10)
+        {
+            lastValue = value;
+            shouldRender = true;
+        }
+
+        Logger.LogInformation($"Should render: {shouldRender}");
+
+        return shouldRender;
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        Logger.LogInformation($"{nameof(ShouldRenderComponent)}, {nameof(OnAfterRenderAsync)}, firstRender: {firstRender}");
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

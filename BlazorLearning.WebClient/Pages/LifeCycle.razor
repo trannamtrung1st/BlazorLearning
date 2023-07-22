@@ -1,0 +1,115 @@
+﻿@page "/components-life-cycle"
+@using Microsoft.AspNetCore.Components.Sections
+@inject ILogger<LifeCycle> Logger;
+@inject IJSRuntime JSRuntime;
+@implements IDisposable;
+
+<PageTitle>Components (Life cycle)</PageTitle>
+
+<h3>Life cycle (@current)</h3>
+
+<p>
+    <input @bind="componentValue" />
+</p>
+
+<hr />
+
+<h3>Value from script on after rendered</h3>
+<p>@valueFromScript</p>
+
+<LifeCycleComponent ComponentValue="@componentValue" />
+
+<hr />
+
+@foreach (var message in messages)
+{
+    <p>@message</p>
+}
+
+<SectionContent SectionName="scripts">
+    <script>
+        window.getValueFromScript = () => "This is the value from script";
+    </script>
+</SectionContent>
+
+@code {
+    private int componentValue;
+    private string valueFromScript;
+    private DateTime current;
+    private System.Timers.Timer timer = new(1000);
+    private CancellationTokenSource cts = new();
+    private List<string> messages;
+
+    protected override Task OnInitializedAsync()
+    {
+        Logger.LogInformation($"{nameof(OnInitializedAsync)}");
+
+        messages = new List<string>();
+        timer.Elapsed += (sender, eventArgs) => OnTimerCallback();
+        timer.Start();
+
+        Task.Run(async () =>
+        {
+            while (!cts.IsCancellationRequested)
+            {
+                await Task.Delay(1000);
+                messages.Add($"New message at {DateTime.Now}");
+            }
+        }, cts.Token);
+
+        return Task.CompletedTask;
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        Logger.LogInformation($"{nameof(OnParametersSetAsync)}");
+        return Task.CompletedTask;
+    }
+
+    private void OnTimerCallback()
+    {
+        _ = InvokeAsync(() =>
+        {
+            current = DateTime.Now;
+            StateHasChanged();
+        });
+    }
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        Logger.LogInformation($"{nameof(SetParametersAsync)}");
+        return base.SetParametersAsync(parameters);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        Logger.LogInformation($"{nameof(LifeCycle)}, {nameof(OnAfterRenderAsync)}, firstRender: {firstRender}");
+        await base.OnAfterRenderAsync(firstRender);
+        bool shouldRender = false;
+
+        if (firstRender && valueFromScript == null)
+        {
+            valueFromScript = await JSRuntime.InvokeAsync<string>("getValueFromScript");
+            shouldRender = true;
+        }
+
+        if (shouldRender)
+        {
+            StateHasChanged();
+        }
+    }
+
+    protected override bool ShouldRender()
+    {
+        bool shouldRender = base.ShouldRender();
+        Logger.LogInformation($"{nameof(LifeCycle)}, shouldRender: {shouldRender}");
+        return shouldRender;
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+        cts.Cancel();
+        cts.Cancel();
+    }
+}

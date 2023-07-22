@@ -1,0 +1,30 @@
+﻿@inject ILogger<LifeCycleComponent> Logger;
+
+<h3>Life cycle component</h3>
+
+<p>ComponentValue (must divisble by 1000): @ComponentValue</p>
+
+<hr />
+
+<ShouldRenderComponent />
+
+@code {
+
+    [Parameter]
+    public int ComponentValue { get; set; }
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        await base.SetParametersAsync(parameters);
+
+        foreach (ParameterValue param in parameters)
+        {
+            Logger.LogInformation($"Param: {param.Name}, Value: {param.Value}, Cascading: {param.Cascading}");
+
+            if (param.Name == nameof(ComponentValue) && ((int)param.Value) % 1000 != 0)
+            {
+                ComponentValue = 0;
+            }
+        }
+    }
+}
