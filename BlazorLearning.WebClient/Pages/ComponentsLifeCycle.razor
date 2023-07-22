@@ -1,6 +1,6 @@
 ﻿@page "/components-life-cycle"
 @using Microsoft.AspNetCore.Components.Sections
-@inject ILogger<LifeCycle> Logger;
+@inject ILogger<ComponentsLifeCycle> Logger;
 @inject IJSRuntime JSRuntime;
 @implements IDisposable;
 
@@ -83,7 +83,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        Logger.LogInformation($"{nameof(LifeCycle)}, {nameof(OnAfterRenderAsync)}, firstRender: {firstRender}");
+        Logger.LogInformation($"{nameof(ComponentsLifeCycle)}, {nameof(OnAfterRenderAsync)}, firstRender: {firstRender}");
         await base.OnAfterRenderAsync(firstRender);
         bool shouldRender = false;
 
@@ -102,7 +102,7 @@
     protected override bool ShouldRender()
     {
         bool shouldRender = base.ShouldRender();
-        Logger.LogInformation($"{nameof(LifeCycle)}, shouldRender: {shouldRender}");
+        Logger.LogInformation($"{nameof(ComponentsLifeCycle)}, shouldRender: {shouldRender}");
         return shouldRender;
     }
 

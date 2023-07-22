@@ -1,0 +1,74 @@
+﻿@page "/components-virtualization"
+@using Microsoft.AspNetCore.Components.Sections;
+@inject ILogger<ComponentsVirtualize> Logger;
+@inject IJSRuntime JSRuntime;
+
+<PageTitle>Components (Virtualization)</PageTitle>
+
+@*
+<HeadContent>
+    <style>
+        html, body { overflow-y: scroll }
+    </style>
+</HeadContent>
+*@
+
+<h3>Virtualization</h3>
+
+<div style="height:500px;overflow-y:scroll">
+    <Virtualize Items="@listItems" Context="item">
+        <p>@item</p>
+    </Virtualize>
+</div>
+
+<hr />
+
+<h3>Virtualization (provider)</h3>
+<p>
+    <button class="btn btn-primary" @onclick="Reorder">Reorder</button>
+</p>
+@if (loading)
+{
+    <div>LOADING !!!</div>
+}
+<div style="height:500px;overflow-y:scroll">
+    <Virtualize ItemsProvider="@LoadItems" Context="item" @ref="@virtualizeComponent"
+                ItemSize="100" SpacerElement="div"
+                OverscanCount="7">
+        <ItemContent>
+            <p style="height:100px">@item</p>
+        </ItemContent>
+        <Placeholder>
+            <p style="height:100px">Loading&hellip; @item.Index</p>
+        </Placeholder>
+    </Virtualize>
+</div>
+
+@code {
+    private bool loading;
+    private Virtualize<string> virtualizeComponent;
+
+    static List<string> listItems = Enumerable.Range(1, 10000).Select(i => $"Item {i}").ToList();
+
+    async ValueTask<ItemsProviderResult<string>> LoadItems(ItemsProviderRequest request)
+    {
+        loading = true;
+        StateHasChanged();
+
+        await Task.Delay(1000);
+
+        var subset = listItems.Skip(request.StartIndex).Take(request.Count);
+
+        loading = false;
+        StateHasChanged();
+
+        return new ItemsProviderResult<string>(subset, listItems.Count);
+    }
+
+    async Task Reorder()
+    {
+        listItems.Reverse();
+
+        await virtualizeComponent.RefreshDataAsync();
+    }
+}
